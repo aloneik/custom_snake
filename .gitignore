@@ -1,2 +1,8 @@
 # Microsoft Visual Studio Code
 .vscode
+
+# Workspace file
+snake_workspace.code-workspace
+
+# Binary file
+*.out
