@@ -6,3 +6,6 @@ snake_workspace.code-workspace
 
 # Binary file
 *.out
+
+# Log file
+*.log
