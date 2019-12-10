@@ -7,9 +7,9 @@
 
 class Food : public sf::Drawable {
   public:
-    Food();
+    explicit Food() = default;
 
-    Food(const sf::Vector2f position);
+    explicit Food(const sf::Vector2f position);
 
     const sf::Vector2f getPosition() const {return _shape.getPosition();}
 
