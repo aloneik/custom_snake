@@ -9,6 +9,8 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "food.hpp"
+
 
 using point_t = boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian>;
 using box_t = boost::geometry::model::box<point_t>;
@@ -59,5 +61,5 @@ bool isIntersectVector2VectorArray(const ShapeT& shape, const VectorShapeT& shap
 inline void updateGameScore(std::size_t* gameScore, const Food& food)
 {
     // TODO: Add logic for different food types
-    gameScore++;
+    (*gameScore)++;
 }
