@@ -9,3 +9,6 @@ snake_workspace.code-workspace
 
 # Log file
 *.log
+
+# build artifacts
+build/**

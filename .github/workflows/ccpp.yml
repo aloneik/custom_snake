@@ -4,14 +4,26 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
+    container:
+      image: ubuntu:19.10
+
     steps:
     - uses: actions/checkout@v1
+    # - name: apt policy reveal
+    #   run: |
+    #     apt policy libboost-dev
+    #     apt policy libsfml-dev
+    #     apt policy meson
     - name: install libs
-      run: sudo apt install libboost-dev
-    - name: make
-      run: make
-    - name: make test
-      run: make test
+      run: |
+        apt update
+        apt install -y libboost-dev libsfml-dev meson build-essential pkg-config
+    - name: build
+      run: |
+        mkdir build
+        cd build
+        meson ..
+        ninja
+    - name: tests
+      run: build/tests.out
