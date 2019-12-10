@@ -55,3 +55,9 @@ bool isIntersectVector2VectorArray(const ShapeT& shape, const VectorShapeT& shap
     }
     return intersection;
 }
+
+inline void updateGameScore(std::size_t* gameScore, const Food& food)
+{
+    // TODO: Add logic for different food types
+    gameScore++;
+}

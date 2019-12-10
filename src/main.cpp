@@ -90,8 +90,7 @@ int main()
                 // Check eating
                 if (snake.getHeadPosition() + (snake.getDirection() * snake.velocity) == food.getPosition())
                 {
-                    gameScore++;
-                    scoreLabel.setString(std::to_string(gameScore));
+                    updateGameScore(&gameScore, food);
                     snake.addSegment(food.getPosition());
 
                     std::random_device seeder;
@@ -138,6 +137,8 @@ int main()
                 exit(-1);
             }
         }
+
+        scoreLabel.setString(std::to_string(gameScore));
 
         // clear the window with black color
         window.clear(sf::Color::Black);
