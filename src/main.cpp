@@ -7,16 +7,27 @@
 #include "utilites.hpp"
 
 
-constexpr unsigned WIDTH {400u};
-constexpr unsigned HEIGHT{300u};
-constexpr unsigned BLOCK_SIZE{20u};
+constexpr unsigned WINDOW_WIDTH      {500u};
+constexpr unsigned WINDOW_HEIGHT     {300u};
+
+constexpr unsigned GAME_FIELD_HEIGHT {400u};
+constexpr unsigned GAME_FIELD_WIDTH  {400u};
+
+constexpr unsigned BLOCK_SIZE        {20u};
 
 
 int main()
 {
+    sf::Font gameScoreFont{};
+    if (!gameScoreFont.loadFromFile("../assets/fonts/Ubuntu-M.ttf"))
+        std::cout << "Font has not ben loaded!" << std::endl;
+
     // Create window
-    sf::RenderWindow window{sf::VideoMode{WIDTH, HEIGHT}, "Snake", sf::Style::Default};
+    sf::RenderWindow window{sf::VideoMode{WINDOW_WIDTH, WINDOW_HEIGHT}, "Snake", sf::Style::Default};
     window.setFramerateLimit(60u);
+
+    sf::RectangleShape gameFieldTexture{sf::Vector2f{GAME_FIELD_WIDTH, GAME_FIELD_WIDTH}};
+    gameFieldTexture.setFillColor(sf::Color{25u, 25u, 25u});
 
     // Set snake's update time
     float time_to_update = 700.f;
@@ -31,7 +42,15 @@ int main()
     // snake.addSegment(sf::Vector2f{17 * 20, 15 * 20});
     auto snakeDirection = LEFT;
 
-    sf::Clock timer;
+    std::size_t gameScore{0u};
+    sf::Text scoreLabel{};
+    scoreLabel.setFillColor(sf::Color::Green);
+    scoreLabel.setFont(gameScoreFont);
+    scoreLabel.setPosition(sf::Vector2f{410u, 10u});
+    scoreLabel.setCharacterSize(24u);
+    scoreLabel.setString(std::to_string(gameScore));
+
+    sf::Clock timer{};
 
     bool isRunning{true};
 
@@ -71,12 +90,14 @@ int main()
                 // Check eating
                 if (snake.getHeadPosition() + (snake.getDirection() * snake.velocity) == food.getPosition())
                 {
+                    gameScore++;
+                    scoreLabel.setString(std::to_string(gameScore));
                     snake.addSegment(food.getPosition());
 
                     std::random_device seeder;
                     std::mt19937 rng(seeder());
-                    std::uniform_int_distribution<> xDistr(0u, (WIDTH / BLOCK_SIZE) - 1u);
-                    std::uniform_int_distribution<> yDistr(0u, (HEIGHT / BLOCK_SIZE) - 1u);
+                    std::uniform_int_distribution<> xDistr(0u, (GAME_FIELD_WIDTH / BLOCK_SIZE) - 1u);
+                    std::uniform_int_distribution<> yDistr(0u, (GAME_FIELD_HEIGHT / BLOCK_SIZE) - 1u);
                     float xCoord{xDistr(rng) * static_cast<float>(BLOCK_SIZE)};
                     float yCoord{yDistr(rng) * static_cast<float>(BLOCK_SIZE)};
                     food.setPosition(sf::Vector2f{xCoord, yCoord});
@@ -109,7 +130,9 @@ int main()
                 timer.restart();
             }
 
-            if (snake.isSelfIntersection() || snake.getHeadPosition().x < 0 || snake.getHeadPosition().x  > WIDTH - BLOCK_SIZE || snake.getHeadPosition().y < 0 || snake.getHeadPosition().y  > HEIGHT - BLOCK_SIZE)
+            if (snake.isSelfIntersection() ||
+                snake.getHeadPosition().x < 0 || snake.getHeadPosition().x  > GAME_FIELD_WIDTH - BLOCK_SIZE ||
+                snake.getHeadPosition().y < 0 || snake.getHeadPosition().y  > GAME_FIELD_HEIGHT - BLOCK_SIZE)
             {
                 std::cout << "fail!" <<std::endl;
                 exit(-1);
@@ -120,6 +143,8 @@ int main()
         window.clear(sf::Color::Black);
 
         // draw everything here...
+        window.draw(gameFieldTexture);
+        window.draw(scoreLabel);
         window.draw(snake);
         window.draw(food);
 
