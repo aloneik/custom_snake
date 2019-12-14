@@ -5,25 +5,39 @@
 #include <SFML/Window.hpp>
 
 
+enum class FoodType : std::size_t 
+{
+    Neutral = 0U,
+    Aggressive,
+    Valuable
+};
+
+
 class Food : public sf::Drawable {
   public:
-    explicit Food() = default;
+    explicit Food();
 
-    explicit Food(const sf::Vector2f position);
+    explicit Food(const sf::Vector2f position, const sf::Vector2f size);
+
+    Food(const sf::Vector2f position, const sf::Vector2f size, const FoodType type);
 
     const sf::Vector2f getPosition() const {return _shape.getPosition();}
 
     const sf::Vector2f getSize() const {return _shape.getSize();}
 
+    const FoodType getType() const {return _type;}
+
     void setPosition(const sf::Vector2f& position) {_shape.setPosition(position);}
+
+    void setType(const FoodType type);
+
 
   private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-  public:
-    sf::Vector2f size{20.f, 20.f};
+    friend const sf::Shape& getShape(const Food& food);
 
   private:
-    sf::Color          _color {sf::Color::Red};
+    FoodType           _type;
     sf::RectangleShape _shape;
 };

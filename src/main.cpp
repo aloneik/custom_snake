@@ -8,7 +8,7 @@
 
 
 constexpr unsigned WINDOW_WIDTH      {500u};
-constexpr unsigned WINDOW_HEIGHT     {300u};
+constexpr unsigned WINDOW_HEIGHT     {400u};
 
 constexpr unsigned GAME_FIELD_HEIGHT {400u};
 constexpr unsigned GAME_FIELD_WIDTH  {400u};
@@ -32,8 +32,13 @@ int main()
     // Set snake's update time
     float time_to_update = 700.f;
 
+    sf::Rect<std::size_t> gameFieldBounds{0u,
+                                          0u,
+                                          (GAME_FIELD_WIDTH / BLOCK_SIZE) - 1u, 
+                                          (GAME_FIELD_HEIGHT / BLOCK_SIZE) - 1u};
+
     // Create food
-    Food food{sf::Vector2f{7 * BLOCK_SIZE, 7 * BLOCK_SIZE}};
+    Food food{sf::Vector2f{7 * BLOCK_SIZE, 7 * BLOCK_SIZE}, sf::Vector2f{BLOCK_SIZE, BLOCK_SIZE}};
 
     // Create snake
     Snake snake{sf::Vector2f{10 * BLOCK_SIZE, 7 * BLOCK_SIZE}};
@@ -93,20 +98,29 @@ int main()
                     updateGameScore(&gameScore, food);
                     snake.addSegment(food.getPosition());
 
-                    std::random_device seeder;
-                    std::mt19937 rng(seeder());
-                    std::uniform_int_distribution<> xDistr(0u, (GAME_FIELD_WIDTH / BLOCK_SIZE) - 1u);
-                    std::uniform_int_distribution<> yDistr(0u, (GAME_FIELD_HEIGHT / BLOCK_SIZE) - 1u);
-                    float xCoord{xDistr(rng) * static_cast<float>(BLOCK_SIZE)};
-                    float yCoord{yDistr(rng) * static_cast<float>(BLOCK_SIZE)};
-                    food.setPosition(sf::Vector2f{xCoord, yCoord});
+                    sf::Vector2f newFoodPosition = generatePosition(gameFieldBounds) * static_cast<float>(BLOCK_SIZE);
+                    food.setPosition(newFoodPosition);
                     while (isIntersectVector2VectorArray(food, getSegments(snake)))
                     {                                 
-                        xCoord = xDistr(rng) * static_cast<float>(BLOCK_SIZE);
-                        yCoord = yDistr(rng) * static_cast<float>(BLOCK_SIZE);
-                        food.setPosition(sf::Vector2f{xCoord, yCoord});
+                        newFoodPosition = generatePosition(gameFieldBounds) * static_cast<float>(BLOCK_SIZE);
+                        food.setPosition(newFoodPosition);
                     }
                     std::cout << "Food Position: " << food.getPosition() << std::endl;
+                    
+                    // TODO: Make type choosing more random or more deterministic
+                    int pseudoRandomNumber = static_cast<int>(food.getPosition().x) * timer.getElapsedTime().asMilliseconds();
+                    if ((pseudoRandomNumber % 3) == 0)
+                    {
+                        food.setType(FoodType::Valuable);
+                    }
+                    else if ((pseudoRandomNumber % 2) == 0)
+                    {
+                        food.setType(FoodType::Aggressive);
+                    }
+                    else 
+                    {
+                        food.setType(FoodType::Neutral);
+                    }
 
                     if (time_to_update >= 350.f)
                     {
