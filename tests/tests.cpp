@@ -112,8 +112,7 @@ int main()
         std::cout << "Test `updateGameScore` 1" << std::endl;
 
         std::size_t score{};
-        Food food{};
-        food.setType(FoodType::Neutral);
+        Food food{sf::Vector2f{}, sf::Vector2f{}, FoodType::Neutral};
         
         // API call
         updateGameScore(&score, food);
@@ -134,8 +133,7 @@ int main()
         std::cout << "Test `updateGameScore` 2.1" << std::endl;
 
         std::size_t score{30u};
-        Food food{};
-        food.setType(FoodType::Aggressive);
+        Food food{sf::Vector2f{}, sf::Vector2f{}, FoodType::Neutral};
         
         // API call
         updateGameScore(&score, food);
@@ -156,8 +154,7 @@ int main()
         std::cout << "Test `updateGameScore` 2.2" << std::endl;
 
         std::size_t score{0u};
-        Food food{};
-        food.setType(FoodType::Aggressive);
+        Food food{sf::Vector2f{}, sf::Vector2f{}, FoodType::Neutral};
         
         // API call
         updateGameScore(&score, food);

@@ -3,18 +3,6 @@
 #include "food.hpp"
 
 
-Food::Food() : _type(FoodType::Neutral), _shape(sf::Vector2f(20.f, 20.f))
-{
-    _shape.setPosition(sf::Vector2f{});
-    _shape.setFillColor(sf::Color::White); 
-}
-
-Food::Food(const sf::Vector2f position, const sf::Vector2f size) : _type(FoodType::Neutral), _shape(size)
-{
-    _shape.setPosition(position);
-    _shape.setFillColor(sf::Color::White);
-}
-
 Food::Food(const sf::Vector2f position, const sf::Vector2f size, const FoodType type) :
     _type(FoodType::Neutral), _shape(size)
 {

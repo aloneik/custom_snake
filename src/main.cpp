@@ -98,6 +98,7 @@ int main()
                     updateGameScore(&gameScore, food);
                     snake.addSegment(food.getPosition());
 
+                    // Generate food position until it don't intersect with snake
                     sf::Vector2f newFoodPosition = generatePosition(gameFieldBounds) * static_cast<float>(BLOCK_SIZE);
                     food.setPosition(newFoodPosition);
                     while (isIntersectVector2VectorArray(food, getSegments(snake)))

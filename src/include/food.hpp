@@ -15,11 +15,7 @@ enum class FoodType : std::size_t
 
 class Food : public sf::Drawable {
   public:
-    explicit Food();
-
-    explicit Food(const sf::Vector2f position, const sf::Vector2f size);
-
-    Food(const sf::Vector2f position, const sf::Vector2f size, const FoodType type);
+    Food(const sf::Vector2f position, const sf::Vector2f size, const FoodType type = FoodType::Neutral);
 
     const sf::Vector2f getPosition() const {return _shape.getPosition();}
 
