@@ -106,5 +106,134 @@ int main()
         std::cout << "--------------------" << std::endl;
     }
 
+    // Test `updateGameScore` 1
+    {
+        std::cout << "------------------------" << std::endl;
+        std::cout << "Test `updateGameScore` 1" << std::endl;
+
+        std::size_t score{};
+        Food food{sf::Vector2f{}, sf::Vector2f{}, FoodType::Neutral};
+        
+        // API call
+        updateGameScore(&score, food);
+        
+        const std::size_t expectedScore{5u};
+
+        if (score == expectedScore)
+            std::cout << "Test completed successfully" << std::endl;
+        else
+            std::cout << "Test failed" << std::endl;
+
+        std::cout << "------------------------" << std::endl;
+    }
+
+    // Test `updateGameScore` 2.1
+    {
+        std::cout << "--------------------------" << std::endl;
+        std::cout << "Test `updateGameScore` 2.1" << std::endl;
+
+        std::size_t score{30u};
+        Food food{sf::Vector2f{}, sf::Vector2f{}, FoodType::Neutral};
+        
+        // API call
+        updateGameScore(&score, food);
+        
+        const std::size_t expectedScore{0u};
+
+        if (score == expectedScore)
+            std::cout << "Test completed successfully" << std::endl;
+        else
+            std::cout << "Test failed" << std::endl;
+
+        std::cout << "--------------------------" << std::endl;
+    }
+
+    // Test `updateGameScore` 2.2
+    {
+        std::cout << "--------------------------" << std::endl;
+        std::cout << "Test `updateGameScore` 2.2" << std::endl;
+
+        std::size_t score{0u};
+        Food food{sf::Vector2f{}, sf::Vector2f{}, FoodType::Neutral};
+        
+        // API call
+        updateGameScore(&score, food);
+        
+        const std::size_t expectedScore{0u};
+
+        if (score == expectedScore)
+            std::cout << "Test completed successfully" << std::endl;
+        else
+            std::cout << "Test failed" << std::endl;
+
+        std::cout << "--------------------------" << std::endl;
+    }
+
+    // Test `Food::setType` 1
+    {
+        std::cout << "----------------------" << std::endl;
+        std::cout << "Test `Food::setType` 1" << std::endl;
+
+        Food food{sf::Vector2f{}, sf::Vector2f{}, FoodType::Aggressive};
+
+        // API call
+        food.setType(FoodType::Neutral);
+        
+        const FoodType expectedType{FoodType::Neutral};
+        const sf::Color expectedColor{sf::Color::White};
+
+        if (getShape(food).getFillColor() == expectedColor ||
+            food.getType() == expectedType)
+            std::cout << "Test completed successfully" << std::endl;
+        else
+            std::cout << "Test failed" << std::endl;
+
+        std::cout << "----------------------" << std::endl;
+    }
+
+    // Test `Food::setType` 2
+    {
+        std::cout << "----------------------" << std::endl;
+        std::cout << "Test `Food::setType` 1" << std::endl;
+
+        Food food{sf::Vector2f{}, sf::Vector2f{}};
+
+        // API call
+        food.setType(FoodType::Aggressive);
+        
+        const FoodType expectedType{FoodType::Aggressive};
+        const sf::Color expectedColor{sf::Color::Red};
+
+        if (getShape(food).getFillColor() == expectedColor ||
+            food.getType() == expectedType)
+            std::cout << "Test completed successfully" << std::endl;
+        else
+            std::cout << "Test failed" << std::endl;
+
+        std::cout << "----------------------" << std::endl;
+    }
+
+    // Test `Food::setType` 3
+    {
+        std::cout << "----------------------" << std::endl;
+        std::cout << "Test `Food::setType` 3" << std::endl;
+
+        Food food{sf::Vector2f{}, sf::Vector2f{}};
+
+        // API call
+        food.setType(FoodType::Valuable);
+        
+        const FoodType expectedType{FoodType::Valuable};
+        const sf::Color expectedColor{sf::Color::Magenta};
+
+        if (getShape(food).getFillColor() == expectedColor ||
+            food.getType() == expectedType)
+            std::cout << "Test completed successfully" << std::endl;
+        else
+            std::cout << "Test failed" << std::endl;
+
+        std::cout << "----------------------" << std::endl;
+    }
+
     return EXIT_SUCCESS;
 }

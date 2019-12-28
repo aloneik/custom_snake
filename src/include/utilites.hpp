@@ -60,6 +60,38 @@ bool isIntersectVector2VectorArray(const ShapeT& shape, const VectorShapeT& shap
 
 inline void updateGameScore(std::size_t* gameScore, const Food& food)
 {
-    // TODO: Add logic for different food types
-    (*gameScore)++;
+    switch (food.getType())
+    {
+        case FoodType::Neutral:
+            *gameScore += 5u;
+            break;
+        case FoodType::Aggressive:
+            if (*gameScore > 30u)
+                *gameScore -= 30u;
+            else
+                *gameScore = 0u;
+            break;
+        case FoodType::Valuable:
+            *gameScore += 30u;
+            break;
+        default:
+            std::cout << "Unknown food type!" << std::endl;
+            break;
+    }
 }
+
+sf::Vector2f generatePosition(const sf::Rect<std::size_t>& bounds)
+{
+    static std::random_device seeder;
+    static std::mt19937 rng{seeder()};
+   
+    std::uniform_int_distribution<> xDistr(bounds.left, bounds.left + bounds.width);
+    std::uniform_int_distribution<> yDistr(bounds.top, bounds.top + bounds.height);
+
+    return sf::Vector2f{static_cast<float>(xDistr(rng)), static_cast<float>(yDistr(rng))};
+}
+
+const sf::Shape& getShape(const Food& food)
+{
+    return food._shape;
+} 
