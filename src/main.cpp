@@ -5,6 +5,7 @@
 #include "snake.hpp"
 #include "food.hpp"
 #include "utilites.hpp"
+#include "random.hpp"
 
 
 constexpr unsigned WINDOW_WIDTH      {500u};
@@ -108,13 +109,12 @@ int main()
                     }
                     std::cout << "Food Position: " << food.getPosition() << std::endl;
                     
-                    // TODO: Make type choosing more random or more deterministic
-                    int pseudoRandomNumber = static_cast<int>(food.getPosition().x) * timer.getElapsedTime().asMilliseconds();
-                    if ((pseudoRandomNumber % 3) == 0)
+                    const int pseudoRandomNumber = UniformRandomNumber::getClosed(1, 11);
+                    if (pseudoRandomNumber < 2)
                     {
                         food.setType(FoodType::Valuable);
                     }
-                    else if ((pseudoRandomNumber % 2) == 0)
+                    else if (pseudoRandomNumber < 4)
                     {
                         food.setType(FoodType::Aggressive);
                     }
@@ -129,14 +129,14 @@ int main()
                     }
                 }
                 std::cout << "print snake BEFORE move" << std::endl;
-                for (auto &seg : getSegments(snake))
+                for (const auto &seg : getSegments(snake))
                 {
                     std::cout << seg.getPosition() << " direction: " << seg.direction << std::endl;
                 }
                 std::cout << "end of print snake BEFORE move" << std::endl;
                 snake.move();
                 std::cout << "print snake AFTER move" << std::endl;
-                for (auto &seg : getSegments(snake))
+                for (const auto &seg : getSegments(snake))
                 {
                     std::cout << seg.getPosition() << " direction: " << seg.direction << std::endl;
                 }
