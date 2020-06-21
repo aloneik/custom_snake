@@ -94,4 +94,17 @@ sf::Vector2f generatePosition(const sf::Rect<std::size_t>& bounds)
 const sf::Shape& getShape(const Food& food)
 {
     return food._shape;
-} 
+}
+
+sf::Vector2f generateNewFoodPos(const sf::Rect<std::size_t>& gameFieldBounds, const Snake& snake, const Food& food)
+{
+    sf::Vector2f newFoodPosition = generatePosition(gameFieldBounds) * food.getSize().x;
+    auto tempFood = food;
+    tempFood.setPosition(newFoodPosition);
+    while (isIntersectVector2VectorArray(tempFood, getSegments(snake)))
+    {                                 
+        newFoodPosition = generatePosition(gameFieldBounds) * food.getSize().x;
+        tempFood.setPosition(newFoodPosition);
+    }
+    return newFoodPosition;
+}

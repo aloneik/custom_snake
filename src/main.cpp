@@ -16,6 +16,8 @@ constexpr unsigned GAME_FIELD_WIDTH  {400u};
 
 constexpr unsigned BLOCK_SIZE        {20u};
 
+constexpr unsigned MAX_FOODS         {10u};
+
 
 int main()
 {
@@ -38,8 +40,14 @@ int main()
                                           (GAME_FIELD_WIDTH / BLOCK_SIZE) - 1u, 
                                           (GAME_FIELD_HEIGHT / BLOCK_SIZE) - 1u};
 
-    // Create food
-    Food food{sf::Vector2f{7 * BLOCK_SIZE, 7 * BLOCK_SIZE}, sf::Vector2f{BLOCK_SIZE, BLOCK_SIZE}};
+    // Create food vector
+    std::vector<Food> foodObjects{};
+    foodObjects.reserve(MAX_FOODS);
+    unsigned foodIdx{0u};
+
+    // Create initial food
+    foodObjects.emplace_back(sf::Vector2f{7 * BLOCK_SIZE, 7 * BLOCK_SIZE}, sf::Vector2f{BLOCK_SIZE, BLOCK_SIZE});
+    foodObjects.emplace_back(sf::Vector2f{3 * BLOCK_SIZE, 2 * BLOCK_SIZE}, sf::Vector2f{BLOCK_SIZE, BLOCK_SIZE});
 
     // Create snake
     Snake snake{sf::Vector2f{10 * BLOCK_SIZE, 7 * BLOCK_SIZE}};
@@ -94,53 +102,55 @@ int main()
             if (timer.getElapsedTime().asMilliseconds() >= time_to_update) {
                 snake.setDirection(snakeDirection);
                 // Check eating
-                if (snake.getHeadPosition() + (snake.getDirection() * snake.velocity) == food.getPosition())
+                for (auto& food : foodObjects)
                 {
-                    updateGameScore(&gameScore, food);
-                    snake.addSegment(food.getPosition());
+                    if (snake.getHeadPosition() + (snake.getDirection() * snake.velocity) == food.getPosition())
+                    {
+                        updateGameScore(&gameScore, food);
+                        snake.addSegment(food.getPosition());
 
-                    // Generate food position until it don't intersect with snake
-                    sf::Vector2f newFoodPosition = generatePosition(gameFieldBounds) * static_cast<float>(BLOCK_SIZE);
-                    food.setPosition(newFoodPosition);
-                    while (isIntersectVector2VectorArray(food, getSegments(snake)))
-                    {                                 
-                        newFoodPosition = generatePosition(gameFieldBounds) * static_cast<float>(BLOCK_SIZE);
-                        food.setPosition(newFoodPosition);
-                    }
-                    std::cout << "Food Position: " << food.getPosition() << std::endl;
-                    
-                    const int pseudoRandomNumber = UniformRandomNumber::getClosed(1, 11);
-                    if (pseudoRandomNumber < 2)
-                    {
-                        food.setType(FoodType::Valuable);
-                    }
-                    else if (pseudoRandomNumber < 4)
-                    {
-                        food.setType(FoodType::Aggressive);
-                    }
-                    else 
-                    {
-                        food.setType(FoodType::Neutral);
-                    }
+                        // Generate food position until it don't intersect with snake
+                        food.setPosition(generateNewFoodPos(gameFieldBounds, snake, food));
+                        std::cout << "Food Position: " << food.getPosition() << std::endl;
+                        
+                        const int pseudoRandomNumber = UniformRandomNumber::getClosed(1, 11);
+                        if (pseudoRandomNumber < 2)
+                        {
+                            food.setType(FoodType::Valuable);
+                        }
+                        else if (pseudoRandomNumber < 4)
+                        {
+                            food.setType(FoodType::Aggressive);
+                            // Create additional food
+                            // TODO: Move additional food create out of eating cycle
+                            Food newFood{sf::Vector2f{0 * BLOCK_SIZE, 0 * BLOCK_SIZE}, sf::Vector2f{BLOCK_SIZE, BLOCK_SIZE}};
+                            newFood.setPosition(generateNewFoodPos(gameFieldBounds, snake, newFood));
+                            foodObjects.push_back(newFood);
+                        }
+                        else 
+                        {
+                            food.setType(FoodType::Neutral);
+                        }
 
-                    if (time_to_update >= 350.f)
-                    {
-                        time_to_update -= 50.f;
+                        if (time_to_update >= 350.f)
+                        {
+                            time_to_update -= 50.f;
+                        }
                     }
                 }
-                std::cout << "print snake BEFORE move" << std::endl;
-                for (const auto &seg : getSegments(snake))
-                {
-                    std::cout << seg.getPosition() << " direction: " << seg.direction << std::endl;
-                }
-                std::cout << "end of print snake BEFORE move" << std::endl;
+                // std::cout << "print snake BEFORE move" << std::endl;
+                // for (const auto &seg : getSegments(snake))
+                // {
+                //     std::cout << seg.getPosition() << " direction: " << seg.direction << std::endl;
+                // }
+                // std::cout << "end of print snake BEFORE move" << std::endl;
                 snake.move();
-                std::cout << "print snake AFTER move" << std::endl;
-                for (const auto &seg : getSegments(snake))
-                {
-                    std::cout << seg.getPosition() << " direction: " << seg.direction << std::endl;
-                }
-                std::cout << "end of print snake AFTER move" << std::endl;
+                // std::cout << "print snake AFTER move" << std::endl;
+                // for (const auto &seg : getSegments(snake))
+                // {
+                //     std::cout << seg.getPosition() << " direction: " << seg.direction << std::endl;
+                // }
+                // std::cout << "end of print snake AFTER move" << std::endl;
                 timer.restart();
             }
 
@@ -162,8 +172,8 @@ int main()
         window.draw(gameFieldTexture);
         window.draw(scoreLabel);
         window.draw(snake);
-        window.draw(food);
-
+        for (const auto& food : foodObjects)
+            window.draw(food);
         window.display();
     }
 
